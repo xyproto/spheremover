@@ -30,5 +30,5 @@ Tested on Arch Linux.
 ## General info
 
 * Version: 0.0.1
-* Author: Alexander F. Rødseth &lt;xyproto@archlinux.org&gt;
+* Author: Alexander F. Rødseth
 * License: MIT
