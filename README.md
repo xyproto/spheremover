@@ -1,6 +1,6 @@
 # Sphere Mover
 
-An experiment with C++, SDL2 and OpenMP-based raytracing
+An experiment with C++, SDL2 and OpenMP-based realtime raytracing.
 
 * Move a sphere using either the arrow keys or `w`, `a`, `s`, `d`.
 * Switch to the next sphere with `space` or `tab`.
