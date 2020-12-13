@@ -1,0 +1,4 @@
+print("hi");
+if (2 > 1) {
+  print("hello");
+}

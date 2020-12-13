@@ -1,0 +1,5 @@
+spheremover
+*.o
+*.bak
+*.pro.user
+.*.stash
