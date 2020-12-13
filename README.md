@@ -25,6 +25,8 @@ Or if you wish to generate a `CMakeLists.txt` file in the process and then build
 
     cxx cmake ninja
 
+Tested on Arch Linux.
+
 ## General info
 
 * Version: 0.0.1
