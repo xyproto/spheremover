@@ -339,16 +339,13 @@ auto TestSDL2RayTrace() -> int
                     break;
                 }
                 case SDLK_f:
-                    if (fullscreen) {
-                        SDL_SetWindowFullscreen(win.get(), 0);
-                        SDL_ShowCursor(true);
-                        fullscreen = false;
-                    } else {
-                        SDL_SetWindowFullscreen(win.get(), SDL_WINDOW_FULLSCREEN_DESKTOP);
-                        SDL_ShowCursor(false);
-                        fullscreen = true;
-                    }
+                case SDLK_F11:
+                    // If fullscreen is currently true, disable it. If not, enable it.
+                    SDL_SetWindowFullscreen(win.get(), (fullscreen ? 0 : SDL_WINDOW_FULLSCREEN_DESKTOP));
+                    // Get the current fullscreen status
                     fullscreen = SDL_GetWindowFlags(win.get()) & SDL_WINDOW_FULLSCREEN_DESKTOP;
+                    // Hide the cursor if fullscreen is enabled
+                    SDL_ShowCursor(!fullscreen);
                     break;
                 case SDLK_q:
                 case SDLK_ESCAPE:
