@@ -339,16 +339,16 @@ auto TestSDL2RayTrace() -> int
                     break;
                 }
                 case SDLK_f:
-                    // TODO: Also check SDL_GetWindowFlags(win) & SDL_WINDOWS_FULLSCREEN?
                     if (fullscreen) {
                         SDL_SetWindowFullscreen(win.get(), 0);
                         SDL_ShowCursor(true);
                         fullscreen = false;
                     } else {
-                        SDL_SetWindowFullscreen(win.get(), SDL_WINDOW_FULLSCREEN);
+                        SDL_SetWindowFullscreen(win.get(), SDL_WINDOW_FULLSCREEN_DESKTOP);
                         SDL_ShowCursor(false);
                         fullscreen = true;
                     }
+                    fullscreen = SDL_GetWindowFlags(win.get()) & SDL_WINDOW_FULLSCREEN_DESKTOP;
                     break;
                 case SDLK_q:
                 case SDLK_ESCAPE:
