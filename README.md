@@ -6,6 +6,7 @@ An experiment with C++, SDL2 and OpenMP-based realtime raytracing.
 * Switch to the next sphere with `space` or `tab`.
 * Toggle fullscreen with `f` or `f11`.
 * Quit with `q` or `esc`.
+* You can also move the current sphere with a joystick, then press a key to select the next one.
 
 ## Screenshot
 
@@ -31,6 +32,6 @@ Written in [`o`](https://github.com/xyproto/o).
 
 ## General info
 
-* Version: 0.0.1
-* Author: Alexander F. Rødseth
+* Version: 0.1.0
+* Author: Alexander F. Rødseth &lt;xyproto@archlinux.org&gt;
 * License: MIT

@@ -277,6 +277,11 @@ auto TestSDL2RayTrace() -> int
 
     SDL_Event event;
 
+    SDL_Joystick* joystick = nullptr;
+    if (SDL_NumJoysticks() > 0) {
+        joystick = SDL_JoystickOpen(0);
+    }
+
     std::cout << "arrow keys and tab to move spheres around" << std::endl;
     std::cout << "esc or q to quit" << std::endl;
     std::cout << "f to toggle fullscreen" << std::endl;
@@ -291,6 +296,11 @@ auto TestSDL2RayTrace() -> int
     int countedFrames = 0;
     fpsTimer.start();
 
+    // Joystick related
+    double joy_offset_x = 0;
+    double joy_offset_y = 0;
+    const int JOYSTICK_DEAD_ZONE = 8000;
+
     while (!quit) {
 
         capTimer.start();
@@ -299,6 +309,32 @@ auto TestSDL2RayTrace() -> int
             switch (event.type) {
             case SDL_QUIT:
                 quit = true;
+                break;
+            case SDL_JOYAXISMOTION:
+                // Thanks https://lazyfoo.net/tutorials/SDL/19_gamepads_and_joysticks/index.php
+                if (event.jaxis.which == 0) { // controller 0
+                    if (event.jaxis.axis == 0) { // axis 0
+                        joy_offset_x = 0;
+                        if (event.jaxis.value < -JOYSTICK_DEAD_ZONE) {
+                            joy_offset_x = -1;
+                        } else if (event.jaxis.value > JOYSTICK_DEAD_ZONE) {
+                            joy_offset_x = 1;
+                        }
+                    } else if (event.jaxis.axis == 1) { // axis 1
+                        joy_offset_y = 0;
+                        if (event.jaxis.value < -JOYSTICK_DEAD_ZONE) {
+                            joy_offset_y = -1;
+                        } else if (event.jaxis.value > JOYSTICK_DEAD_ZONE) {
+                            joy_offset_y = 1;
+                        }
+                    }
+                }
+                break;
+            case SDL_JOYBUTTONUP: // If a joystick button is released, select the next sphere
+                currentSphere++;
+                if (currentSphere >= spheres.size()) {
+                    currentSphere = 0;
+                }
                 break;
             case SDL_KEYDOWN:
                 switch (event.key.keysym.sym) {
@@ -360,6 +396,11 @@ auto TestSDL2RayTrace() -> int
             }
         }
 
+        if (joy_offset_x != 0 || joy_offset_y != 0) {
+            const auto newScene = scene_ptr->sphere_move(currentSphere, Vec3 { joy_offset_x, joy_offset_y, 0 });
+            scene_ptr = std::make_unique<Scene>(newScene);
+        }
+
         double avgFPS = countedFrames / (fpsTimer.getTicks() / 1000.0);
         if (avgFPS > 2000000) {
             avgFPS = 0;
@@ -392,6 +433,12 @@ auto TestSDL2RayTrace() -> int
             SDL_Delay(SCREEN_TICKS_PER_FRAME - frameTicks);
         }
     }
+
+    if (joystick != nullptr) {
+        SDL_JoystickClose(joystick);
+        joystick = nullptr;
+    }
+
     SDL_Quit();
     return 0;
 }
