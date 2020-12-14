@@ -1,5 +1,7 @@
 # Plans
 
+- [ ] Add a menu
+- [ ] Make it possible to configure the joystick
 - [ ] Create an RGB and an RGBA color class.
 - [ ] Move the clamp function to the RGB and RGBA classes.
 - [ ] Once the sphere intersection is working, add a Triangle class and add Ray and Triangle intersection.
