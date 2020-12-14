@@ -4,7 +4,7 @@ An experiment with C++, SDL2 and OpenMP-based realtime raytracing.
 
 * Move a sphere using either the arrow keys or `w`, `a`, `s`, `d`.
 * Switch to the next sphere with `space` or `tab`.
-* Toggle fullscreen with `f`.
+* Toggle fullscreen with `f` or `f11`.
 * Quit with `q` or `esc`.
 
 ## Screenshot
