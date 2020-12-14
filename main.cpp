@@ -233,7 +233,8 @@ auto TestSDL2RayTrace() -> int
         winf = SDL_WINDOW_SHOWN;
     }
 
-    auto win = sdl2::make_window("Sphere Mover", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, winw, winh, winf);
+    auto win = sdl2::make_window(
+        "Sphere Mover", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, winw, winh, winf);
     if (!win) {
         cerr << "Error creating window: " << SDL_GetError() << endl;
         return 1;
@@ -303,7 +304,7 @@ auto TestSDL2RayTrace() -> int
                 switch (event.key.keysym.sym) {
                 case SDLK_SPACE:
                 case SDLK_TAB: {
-                    //std::cout << "Tab" << std::endl;
+                    // std::cout << "Tab" << std::endl;
                     currentSphere++;
                     if (currentSphere >= spheres.size()) {
                         currentSphere = 0;
@@ -312,28 +313,28 @@ auto TestSDL2RayTrace() -> int
                 }
                 case SDLK_d:
                 case SDLK_RIGHT: {
-                    //std::cout << "Right" << std::endl;
+                    // std::cout << "Right" << std::endl;
                     const auto newScene = scene_ptr->sphere_move(currentSphere, Vec3 { 1, 0, 0 });
                     scene_ptr = std::make_unique<Scene>(newScene);
                     break;
                 }
                 case SDLK_a:
                 case SDLK_LEFT: {
-                    //std::cout << "Left" << std::endl;
+                    // std::cout << "Left" << std::endl;
                     const auto newScene = scene_ptr->sphere_move(currentSphere, Vec3 { -1, 0, 0 });
                     scene_ptr = std::make_unique<Scene>(newScene);
                     break;
                 }
                 case SDLK_w:
                 case SDLK_UP: {
-                    //std::cout << "Up" << std::endl;
+                    // std::cout << "Up" << std::endl;
                     const auto newScene = scene_ptr->sphere_move(currentSphere, Vec3 { 0, -1, 0 });
                     scene_ptr = std::make_unique<Scene>(newScene);
                     break;
                 }
                 case SDLK_s:
                 case SDLK_DOWN: {
-                    //std::cout << "Down" << std::endl;
+                    // std::cout << "Down" << std::endl;
                     const auto newScene = scene_ptr->sphere_move(currentSphere, Vec3 { 0, 1, 0 });
                     scene_ptr = std::make_unique<Scene>(newScene);
                     break;
@@ -341,12 +342,13 @@ auto TestSDL2RayTrace() -> int
                 case SDLK_f:
                 case SDLK_F11:
                     // Get the current fullscreen situation before the toggle
-                    fullscreen = SDL_GetWindowFlags(win.get()) & SDL_WINDOW_FULLSCREEN_DESKTOP;
+                    auto window_flags = SDL_GetWindowFlags(win.get());
+                    fullscreen = (window_flags & SDL_WINDOW_FULLSCREEN_DESKTOP)
+                        || (window_flags & SDL_WINDOW_FULLSCREEN);
                     // If fullscreen is currently true, disable it. If not, enable it.
-                    SDL_SetWindowFullscreen(win.get(), (fullscreen ? 0 : SDL_WINDOW_FULLSCREEN_DESKTOP));
-                    // Get the current fullscreen situation, just to make sure the cursor is hidden correctly
-                    fullscreen = SDL_GetWindowFlags(win.get()) & SDL_WINDOW_FULLSCREEN_DESKTOP;
-                    // Show the mouse cursor if fullscreen is disabled
+                    SDL_SetWindowFullscreen(
+                        win.get(), (fullscreen ? 0 : SDL_WINDOW_FULLSCREEN_DESKTOP));
+                    // Show the mouse cursor if fullscreen was false before the toggle
                     SDL_ShowCursor(!fullscreen);
                     break;
                 case SDLK_q:
@@ -366,11 +368,12 @@ auto TestSDL2RayTrace() -> int
 #pragma omp parallel for
         for (int y = 0; y < H; ++y) {
             for (int x = 0; x < W; ++x) {
-                //if (x % 2 != 0) {
+                // if (x % 2 != 0) {
                 //    textureBuffer[(y * W) + x] = textureBuffer[(y * W) + x - 1];
                 //} else {
                 const RGB c = scene_ptr->color(fromPoint, x, y).clamp255();
-                textureBuffer[(y * W) + x] = 0xFF000000 | (static_cast<uint8_t>(c.R()) << 16) | (static_cast<uint8_t>(c.B()) << 8) | static_cast<uint8_t>(c.G());
+                textureBuffer[(y * W) + x] = 0xFF000000 | (static_cast<uint8_t>(c.R()) << 16)
+                    | (static_cast<uint8_t>(c.B()) << 8) | static_cast<uint8_t>(c.G());
                 //}
             }
         }
