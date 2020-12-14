@@ -340,7 +340,7 @@ auto TestSDL2RayTrace() -> int
                     break;
                 }
                 case SDLK_f:
-                case SDLK_F11:
+                case SDLK_F11: {
                     // Get the current fullscreen situation before the toggle
                     auto window_flags = SDL_GetWindowFlags(win.get());
                     fullscreen = (window_flags & SDL_WINDOW_FULLSCREEN_DESKTOP)
@@ -351,6 +351,7 @@ auto TestSDL2RayTrace() -> int
                     // Show the mouse cursor if fullscreen was false before the toggle
                     SDL_ShowCursor(!fullscreen);
                     break;
+                }
                 case SDLK_q:
                 case SDLK_ESCAPE:
                     quit = true;
