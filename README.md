@@ -27,6 +27,8 @@ Or if you wish to generate a `CMakeLists.txt` file in the process and then build
 
 Tested on Arch Linux.
 
+Written in [`o`](https://github.com/xyproto/o).
+
 ## General info
 
 * Version: 0.0.1
