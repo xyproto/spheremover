@@ -1,5 +1,7 @@
 #pragma once
 
+// WORK IN PROGRESS
+
 // A mesh is a collection of faces?
 // A face is a collection of vertex indices + the lookup table? Hash map?
 
