@@ -44,7 +44,8 @@ public:
         m_planes.push_back(plane);
     }
 
-    Scene(Sphere light, std::vector<Plane> planes, std::vector<Sphere> spheres, RGB backgroundColor)
+    Scene(
+        Sphere light, std::vector<Plane> planes, std::vector<Sphere> spheres, RGB backgroundColor)
         : m_light { light }
         , m_planes { planes }
         , m_spheres { spheres }
@@ -64,9 +65,7 @@ public:
 const Scene Scene::sphere_move(const size_t index, const Vec3 offset) const
 {
     if (m_spheres.empty()) {
-        return Scene {
-            m_light, m_planes, m_spheres, m_backgroundColor
-        };
+        return Scene { m_light, m_planes, m_spheres, m_backgroundColor };
     }
 
     std::vector<Sphere> newSpheres;
@@ -80,9 +79,7 @@ const Scene Scene::sphere_move(const size_t index, const Vec3 offset) const
             newSpheres.push_back(m_spheres[i]);
         }
     }
-    return Scene {
-        m_light, m_planes, newSpheres, m_backgroundColor
-    };
+    return Scene { m_light, m_planes, newSpheres, m_backgroundColor };
 }
 
 // Move the light by creating an enitirely new scene
@@ -91,9 +88,7 @@ const Scene Scene::light_move(const Vec3 offset) const
     auto newPos = m_light.pos() + offset;
     auto newRadius = m_light.r();
     Sphere newLight = Sphere { newPos, newRadius };
-    return Scene {
-        newLight, m_planes, m_spheres, m_backgroundColor
-    };
+    return Scene { newLight, m_planes, m_spheres, m_backgroundColor };
 }
 
 // List the elements in this scene
@@ -165,10 +160,11 @@ inline const RGB Scene::color(const Point3 fromPoint, int x, int y) const
                 firstFind = false;
             }
 
-            depthColor.insert(std::make_pair<double, RGB>(std::move(depth), std::move(currentColor)));
+            depthColor.insert(
+                std::make_pair<double, RGB>(std::move(depth), std::move(currentColor)));
 
             // Clamp the color values to the 0..255 range
-            //return currentColor.clamp255();
+            // return currentColor.clamp255();
         }
     }
 
@@ -195,7 +191,8 @@ inline const RGB Scene::color(const Point3 fromPoint, int x, int y) const
             const double dt = lightDirection.normalize().dot(normal.normalize());
 
             // Use a formula for producting a color from dt.
-            RGB currentColor = ((Color::blueish + Color::white * dt) * .5) * .5 + m_backgroundColor * .5;
+            RGB currentColor
+                = ((Color::blueish + Color::white * dt) * .5) * .5 + m_backgroundColor * .5;
 
             // TODO: Optimize by using distancedistance instead of distance, to avoid a sqrt?
             double depth = fromPoint.distance(intersectionPoint);
@@ -205,10 +202,11 @@ inline const RGB Scene::color(const Point3 fromPoint, int x, int y) const
                 firstFind = false;
             }
 
-            depthColor.insert(std::make_pair<double, RGB>(std::move(depth), std::move(currentColor)));
+            depthColor.insert(
+                std::make_pair<double, RGB>(std::move(depth), std::move(currentColor)));
 
             // Clamp the color values to the 0..255 range
-            //return currentColor.clamp255();
+            // return currentColor.clamp255();
         }
     }
 

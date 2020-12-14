@@ -76,16 +76,10 @@ inline double Vec4::dot(const Vec4& a) const
 }
 
 // Length; distance from (0, 0, 0)
-inline double Vec4::len() const
-{
-    return std::sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
-}
+inline double Vec4::len() const { return std::sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]); }
 
 // Length; distance from (0, 0, 0), squared
-inline double Vec4::len_squared() const
-{
-    return v[0] * v[0] + v[1] * v[1] + v[2] * v[2];
-}
+inline double Vec4::len_squared() const { return v[0] * v[0] + v[1] * v[1] + v[2] * v[2]; }
 
 // Less than, without using sqrt
 inline bool Vec4::operator<(const Vec4& a) const
@@ -134,7 +128,8 @@ inline double Vec4::z() const { return v[2]; }
 
 inline double Vec4::t() const { return v[3]; }
 
-inline bool operator==(const Vec4& a, const Vec4& b) {
+inline bool operator==(const Vec4& a, const Vec4& b)
+{
     return a.x() == b.x() && a.y() == b.y() && a.z() == b.z() && a.t() == b.t();
 }
 

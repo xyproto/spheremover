@@ -111,9 +111,7 @@ inline double Vec2::x() const { return v[0]; }
 // Return the y component
 inline double Vec2::y() const { return v[1]; }
 
-inline bool operator==(const Vec2& a, const Vec2& b) {
-    return a.x() == b.x() && a.y() == b.y();
-}
+inline bool operator==(const Vec2& a, const Vec2& b) { return a.x() == b.x() && a.y() == b.y(); }
 
 inline double Vec2::R() const { return v[0]; }
 

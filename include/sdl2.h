@@ -77,7 +77,8 @@ inline texture_ptr_t make_texture(SDL_Renderer* ren, SDL_Surface* surf)
 
 inline texture_ptr_t make_buffer_texture(SDL_Renderer* ren, int w, int h)
 {
-    return make_resource(SDL_CreateTexture, SDL_DestroyTexture, ren, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, w, h);
+    return make_resource(SDL_CreateTexture, SDL_DestroyTexture, ren, SDL_PIXELFORMAT_ARGB8888,
+        SDL_TEXTUREACCESS_STREAMING, w, h);
 }
 
 } // namespace sdl2

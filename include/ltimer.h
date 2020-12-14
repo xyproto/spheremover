@@ -2,42 +2,40 @@
 
 // From: https://lazyfoo.net/tutorials/SDL/23_advanced_timers/index.php
 
+// The application time based timer
+class LTimer {
+public:
+    // Initializes variables
+    LTimer();
 
-//The application time based timer
-class LTimer
-{
-    public:
-        //Initializes variables
-        LTimer();
+    // The various clock actions
+    void start();
+    void stop();
+    void pause();
+    void unpause();
 
-        //The various clock actions
-        void start();
-        void stop();
-        void pause();
-        void unpause();
+    // Gets the timer's time
+    Uint32 getTicks();
 
-        //Gets the timer's time
-        Uint32 getTicks();
+    // Checks the status of the timer
+    bool isStarted();
+    bool isPaused();
 
-        //Checks the status of the timer
-        bool isStarted();
-        bool isPaused();
+private:
+    // The clock time when the timer started
+    Uint32 mStartTicks;
 
-    private:
-        //The clock time when the timer started
-        Uint32 mStartTicks;
+    // The ticks stored when the timer was paused
+    Uint32 mPausedTicks;
 
-        //The ticks stored when the timer was paused
-        Uint32 mPausedTicks;
-
-        //The timer status
-        bool mPaused;
-        bool mStarted;
+    // The timer status
+    bool mPaused;
+    bool mStarted;
 };
 
 LTimer::LTimer()
 {
-    //Initialize the variables
+    // Initialize the variables
     mStartTicks = 0;
     mPausedTicks = 0;
 
@@ -47,39 +45,38 @@ LTimer::LTimer()
 
 void LTimer::start()
 {
-    //Start the timer
+    // Start the timer
     mStarted = true;
 
-    //Unpause the timer
+    // Unpause the timer
     mPaused = false;
 
-    //Get the current clock time
+    // Get the current clock time
     mStartTicks = SDL_GetTicks();
     mPausedTicks = 0;
 }
 
 void LTimer::stop()
 {
-    //Stop the timer
+    // Stop the timer
     mStarted = false;
 
-    //Unpause the timer
+    // Unpause the timer
     mPaused = false;
 
-    //Clear tick variables
+    // Clear tick variables
     mStartTicks = 0;
     mPausedTicks = 0;
 }
 
 void LTimer::pause()
 {
-    //If the timer is running and isn't already paused
-    if( mStarted && !mPaused )
-    {
-        //Pause the timer
+    // If the timer is running and isn't already paused
+    if (mStarted && !mPaused) {
+        // Pause the timer
         mPaused = true;
 
-        //Calculate the paused ticks
+        // Calculate the paused ticks
         mPausedTicks = SDL_GetTicks() - mStartTicks;
         mStartTicks = 0;
     }
@@ -87,37 +84,32 @@ void LTimer::pause()
 
 void LTimer::unpause()
 {
-    //If the timer is running and paused
-    if( mStarted && mPaused )
-    {
-        //Unpause the timer
+    // If the timer is running and paused
+    if (mStarted && mPaused) {
+        // Unpause the timer
         mPaused = false;
 
-        //Reset the starting ticks
+        // Reset the starting ticks
         mStartTicks = SDL_GetTicks() - mPausedTicks;
 
-        //Reset the paused ticks
+        // Reset the paused ticks
         mPausedTicks = 0;
     }
 }
 
 Uint32 LTimer::getTicks()
 {
-    //The actual timer time
+    // The actual timer time
     Uint32 time = 0;
 
-    //If the timer is running
-    if( mStarted )
-    {
-        //If the timer is paused
-        if( mPaused )
-        {
-            //Return the number of ticks when the timer was paused
+    // If the timer is running
+    if (mStarted) {
+        // If the timer is paused
+        if (mPaused) {
+            // Return the number of ticks when the timer was paused
             time = mPausedTicks;
-        }
-        else
-        {
-            //Return the current time minus the start time
+        } else {
+            // Return the current time minus the start time
             time = SDL_GetTicks() - mStartTicks;
         }
     }
@@ -127,12 +119,12 @@ Uint32 LTimer::getTicks()
 
 bool LTimer::isStarted()
 {
-    //Timer is running and paused or unpaused
+    // Timer is running and paused or unpaused
     return mStarted;
 }
 
 bool LTimer::isPaused()
 {
-    //Timer is running and paused
+    // Timer is running and paused
     return mPaused && mStarted;
 }

@@ -88,16 +88,10 @@ inline const Vec3 Vec3::cross(const Vec3& a) const
 }
 
 // Length; distance from (0, 0, 0)
-inline double Vec3::len() const
-{
-    return std::sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
-}
+inline double Vec3::len() const { return std::sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]); }
 
 // Length; distance from (0, 0, 0), squared
-inline double Vec3::len_squared() const
-{
-    return v[0] * v[0] + v[1] * v[1] + v[2] * v[2];
-}
+inline double Vec3::len_squared() const { return v[0] * v[0] + v[1] * v[1] + v[2] * v[2]; }
 
 // Less than, without using sqrt
 inline bool Vec3::operator<(const Vec3& a) const
@@ -151,8 +145,15 @@ inline const Vec3 Vec3::clamp255() const
 {
     // inspired by
     // https://github.com/MarcusMathiassen/BasicRaytracer30min/blob/master/basic_raytracer.cpp
-    return Vec3 { (v[0] > 255) ? 255 : (v[0] < 0) ? 0 : v[0],
-        (v[1] > 255) ? 255 : (v[1] < 0) ? 0 : v[1], (v[2] > 255) ? 255 : (v[2] < 0) ? 0 : v[2] };
+    return Vec3 { (v[0] > 255) ? 255
+            : (v[0] < 0)       ? 0
+                               : v[0],
+        (v[1] > 255)     ? 255
+            : (v[1] < 0) ? 0
+                         : v[1],
+        (v[2] > 255)     ? 255
+            : (v[2] < 0) ? 0
+                         : v[2] };
 }
 
 // Output R, G and B, as space separated ints
@@ -162,37 +163,24 @@ inline const std::string Vec3::ppm() const
         + " "s + std::to_string(static_cast<int>(v[2]));
 }
 
-inline double Vec3::R() const
-{
-    return v[0];
-}
+inline double Vec3::R() const { return v[0]; }
 
-inline double Vec3::G() const
-{
-    return v[1];
-}
+inline double Vec3::G() const { return v[1]; }
 
-inline double Vec3::B() const
-{
-    return v[2];
-}
+inline double Vec3::B() const { return v[2]; }
 
-inline const Vec3 operator*(double d, const Vec3 v)
-{
-    return v * d;
-}
+inline const Vec3 operator*(double d, const Vec3 v) { return v * d; }
 
-inline const Vec3 operator/(double d, const Vec3 v)
-{
-    return v * (1/d);
-}
+inline const Vec3 operator/(double d, const Vec3 v) { return v * (1 / d); }
 
 double Vec3::distance(const Vec3& a) const // distance to another Vec3
 {
-    return std::sqrt((v[0] - a.v[0]) * (v[0] - a.v[0]) + (v[1] - a.v[1]) * (v[1] - a.v[1]) + (v[2] - a.v[2]) * (v[2] - a.v[2]));
+    return std::sqrt((v[0] - a.v[0]) * (v[0] - a.v[0]) + (v[1] - a.v[1]) * (v[1] - a.v[1])
+        + (v[2] - a.v[2]) * (v[2] - a.v[2]));
 }
 
 double Vec3::distance_squared(const Vec3& a) const // distance to another Vec3, squared
 {
-    return (v[0] - a.v[0]) * (v[0] - a.v[0]) + (v[1] - a.v[1]) * (v[1] - a.v[1]) + (v[2] - a.v[2]) * (v[2] - a.v[2]);
+    return (v[0] - a.v[0]) * (v[0] - a.v[0]) + (v[1] - a.v[1]) * (v[1] - a.v[1])
+        + (v[2] - a.v[2]) * (v[2] - a.v[2]);
 }

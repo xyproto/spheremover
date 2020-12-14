@@ -20,7 +20,8 @@ class Ray {
 protected:
     const Point3 m_p0; // start of ray
     const Point3 m_p1; // end of ray
-    const Vec3 m_direction; // the direction the ray is pointing (this is m_p1 - m_p0, but it's useful to cache)
+    const Vec3 m_direction; // the direction the ray is pointing (this is m_p1 - m_p0, but it's
+                            // useful to cache)
 
 public:
     Ray(double _p0x, double _p0y, double _p0z, double _p1x, double _p1y, double _p1z)
@@ -94,7 +95,8 @@ inline const std::optional<std::pair<const Point3, const Vec3>> Ray::intersect(
 }
 
 // ray plane intersection
-inline const std::optional<std::pair<const Point3, const Vec3>> Ray::intersect(const Plane& plane) const
+inline const std::optional<std::pair<const Point3, const Vec3>> Ray::intersect(
+    const Plane& plane) const
 {
     double denominator = direction().dot(plane.normal());
 
@@ -109,7 +111,7 @@ inline const std::optional<std::pair<const Point3, const Vec3>> Ray::intersect(c
 
     const Point3 intersectionPoint = m_p0 + t * direction();
 
-    //std::cout << "PLANE INTERSECTION POINT: " << intersectionPoint << std::endl;
+    // std::cout << "PLANE INTERSECTION POINT: " << intersectionPoint << std::endl;
 
     return std::pair { std::move(intersectionPoint), plane.normal() };
 }
@@ -131,7 +133,4 @@ inline std::ostream& operator<<(std::ostream& os, const Ray& ray)
     return os;
 }
 
-inline const Vec3 Ray::direction() const
-{
-    return m_direction;
-}
+inline const Vec3 Ray::direction() const { return m_direction; }
