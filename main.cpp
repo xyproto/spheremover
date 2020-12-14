@@ -340,11 +340,13 @@ auto TestSDL2RayTrace() -> int
                 }
                 case SDLK_f:
                 case SDLK_F11:
+                    // Get the current fullscreen situation before the toggle
+                    fullscreen = SDL_GetWindowFlags(win.get()) & SDL_WINDOW_FULLSCREEN_DESKTOP;
                     // If fullscreen is currently true, disable it. If not, enable it.
                     SDL_SetWindowFullscreen(win.get(), (fullscreen ? 0 : SDL_WINDOW_FULLSCREEN_DESKTOP));
-                    // Get the current fullscreen status
+                    // Get the current fullscreen situation, just to make sure the cursor is hidden correctly
                     fullscreen = SDL_GetWindowFlags(win.get()) & SDL_WINDOW_FULLSCREEN_DESKTOP;
-                    // Hide the cursor if fullscreen is enabled
+                    // Show the mouse cursor if fullscreen is disabled
                     SDL_ShowCursor(!fullscreen);
                     break;
                 case SDLK_q:
