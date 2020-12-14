@@ -200,7 +200,7 @@ void TestRay()
     }
 }
 
-auto TestSDL2RayTrace() -> int
+auto TestSDL2RayTrace(const bool verbose) -> int
 {
 
     using std::cerr;
@@ -278,7 +278,22 @@ auto TestSDL2RayTrace() -> int
     SDL_Event event;
 
     SDL_Joystick* joystick = nullptr;
-    if (SDL_NumJoysticks() > 0) {
+    auto found_joysticks = SDL_NumJoysticks();
+    if (found_joysticks > 0) {
+        SDL_Joystick* temp_joystick = nullptr;
+        for (auto i = 0; i < found_joysticks; i++) {
+            temp_joystick = SDL_JoystickOpen(i);
+            if (temp_joystick == nullptr) {
+                std::cerr << "JOYSTICK: " << i << ": " << SDL_GetError() << std::endl;
+                continue;
+            }
+            std::string joystick_name = SDL_JoystickName(temp_joystick);
+            SDL_JoystickClose(temp_joystick);
+            temp_joystick = nullptr;
+            if (verbose) {
+                std::cout << "JOYSTICK: " << joystick_name << std::endl;
+            }
+        }
         joystick = SDL_JoystickOpen(0);
     }
 
@@ -296,9 +311,14 @@ auto TestSDL2RayTrace() -> int
     int countedFrames = 0;
     fpsTimer.start();
 
-    // Joystick related
-    double joy_offset_x = 0;
-    double joy_offset_y = 0;
+    // Left analog controller on an Xbox Wireless controller
+    double joy_left_offset_x = 0;
+    double joy_left_offset_y = 0;
+
+    // Right analog controller on an Xbox Wireless controller
+    double joy_right_offset_x = 0;
+    double joy_right_offset_y = 0;
+
     const int JOYSTICK_DEAD_ZONE = 8000;
 
     while (!quit) {
@@ -313,19 +333,33 @@ auto TestSDL2RayTrace() -> int
             case SDL_JOYAXISMOTION:
                 // Thanks https://lazyfoo.net/tutorials/SDL/19_gamepads_and_joysticks/index.php
                 if (event.jaxis.which == 0) { // controller 0
-                    if (event.jaxis.axis == 0) { // axis 0
-                        joy_offset_x = 0;
+                    if (event.jaxis.axis == 0) { // left X, smooth
+                        joy_left_offset_x = 0;
                         if (event.jaxis.value < -JOYSTICK_DEAD_ZONE) {
-                            joy_offset_x = -1;
+                            joy_left_offset_x = event.jaxis.value / 32768.0;
                         } else if (event.jaxis.value > JOYSTICK_DEAD_ZONE) {
-                            joy_offset_x = 1;
+                            joy_left_offset_x = event.jaxis.value / 32767.0;
                         }
-                    } else if (event.jaxis.axis == 1) { // axis 1
-                        joy_offset_y = 0;
+                    } else if (event.jaxis.axis == 1) { // left Y, smooth
+                        joy_left_offset_y = 0;
                         if (event.jaxis.value < -JOYSTICK_DEAD_ZONE) {
-                            joy_offset_y = -1;
+                            joy_left_offset_y = event.jaxis.value / 32768.0;
                         } else if (event.jaxis.value > JOYSTICK_DEAD_ZONE) {
-                            joy_offset_y = 1;
+                            joy_left_offset_y = event.jaxis.value / 32767.0;
+                        }
+                    } else if (event.jaxis.axis == 3) { // right X, 8-direction
+                        joy_right_offset_x = 0;
+                        if (event.jaxis.value < -JOYSTICK_DEAD_ZONE) {
+                            joy_right_offset_x = -1;
+                        } else if (event.jaxis.value > JOYSTICK_DEAD_ZONE) {
+                            joy_right_offset_x = 1;
+                        }
+                    } else if (event.jaxis.axis == 4) { // right Y, 8-direction
+                        joy_right_offset_y = 0;
+                        if (event.jaxis.value < -JOYSTICK_DEAD_ZONE) {
+                            joy_right_offset_y = -1;
+                        } else if (event.jaxis.value > JOYSTICK_DEAD_ZONE) {
+                            joy_right_offset_y = 1;
                         }
                     }
                 }
@@ -345,6 +379,7 @@ auto TestSDL2RayTrace() -> int
                     if (currentSphere >= spheres.size()) {
                         currentSphere = 0;
                     }
+                    // std::cout << "current sphere is now " << currentSphere << std::endl;
                     break;
                 }
                 case SDLK_d:
@@ -396,9 +431,31 @@ auto TestSDL2RayTrace() -> int
             }
         }
 
-        if (joy_offset_x != 0 || joy_offset_y != 0) {
-            const auto newScene = scene_ptr->sphere_move(currentSphere, Vec3 { joy_offset_x, joy_offset_y, 0 });
+        // Left thumbstick moves the current sphere
+        if (joy_left_offset_x != 0 || joy_left_offset_y != 0) {
+            const auto newScene = scene_ptr->sphere_move(
+                currentSphere, Vec3 { joy_left_offset_x, joy_left_offset_y, 0 });
             scene_ptr = std::make_unique<Scene>(newScene);
+            // std::cout << "moved sphere " << currentSphere << std::endl;
+        }
+
+        // Right thumbstick moves the next sphere
+        if (joy_right_offset_x != 0 || joy_right_offset_y != 0) {
+            currentSphere++;
+            if (currentSphere >= spheres.size()) {
+                currentSphere = 0;
+            }
+            const auto newScene = scene_ptr->sphere_move(
+                currentSphere, Vec3 { joy_right_offset_x, joy_right_offset_y, 0 });
+            scene_ptr = std::make_unique<Scene>(newScene);
+            // std::cout << "moved sphere " << currentSphere << std::endl;
+
+            // NOTE: currentSphere must always be > 0, it's not an int
+            if (currentSphere > 0) {
+                currentSphere--;
+            } else {
+                currentSphere = spheres.size() - 1;
+            }
         }
 
         double avgFPS = countedFrames / (fpsTimer.getTicks() / 1000.0);
@@ -509,7 +566,7 @@ auto main() -> int
     TestScript(SCRIPTDIR "hello.pip"s);
     TestScript(SCRIPTDIR "hello2.pip"s);*/
 
-    TestSDL2RayTrace();
+    TestSDL2RayTrace(true);
 
     return EXIT_SUCCESS;
 }
