@@ -37,6 +37,8 @@ public:
 
     double R() const;
     double G() const;
+
+    const Vec2 intify() const;
 };
 
 // Add components
@@ -116,3 +118,12 @@ inline bool operator==(const Vec2& a, const Vec2& b) { return a.x() == b.x() && 
 inline double Vec2::R() const { return v[0]; }
 
 inline double Vec2::G() const { return v[1]; }
+//
+// Return a vec2 with only the integer parts of the coordinates.
+// This can be used for finding the normal vectors of a square,
+// if the center of the square is at (0,0).
+inline const Vec2 Vec2::intify() const
+{
+    return Vec2 { static_cast<double>(static_cast<int>(v[0])),
+        static_cast<double>(static_cast<int>(v[1])) };
+}

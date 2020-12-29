@@ -47,6 +47,11 @@ public:
 
     double distance(const Vec3& a) const; // length to another Vec3
     double distance_squared(const Vec3& a) const; // length to another Vec3, squared
+
+    const Vec3 intify() const; // the integer part of each element
+
+    // The assign operator can not be implemented, since Vec3 is always const
+    // Vec3& operator=(Vec3&&); // needed by std::sort
 };
 
 // Add components
@@ -183,4 +188,13 @@ double Vec3::distance_squared(const Vec3& a) const // distance to another Vec3, 
 {
     return (v[0] - a.v[0]) * (v[0] - a.v[0]) + (v[1] - a.v[1]) * (v[1] - a.v[1])
         + (v[2] - a.v[2]) * (v[2] - a.v[2]);
+}
+
+// Return a vec3 with only the integer parts of the coordinates.
+// This can be used for finding the normal vectors of a cube,
+// if the center of the cube is at (0,0,0).
+inline const Vec3 Vec3::intify() const
+{
+    return Vec3 { static_cast<double>(static_cast<int>(v[0])),
+        static_cast<double>(static_cast<int>(v[1])), static_cast<double>(static_cast<int>(v[2])) };
 }

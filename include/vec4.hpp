@@ -42,6 +42,8 @@ public:
     double G() const;
     double B() const;
     double A() const;
+
+    const Vec4 intify() const;
 };
 
 // Add components
@@ -140,3 +142,13 @@ inline double Vec4::G() const { return v[1]; }
 inline double Vec4::B() const { return v[2]; }
 
 inline double Vec4::A() const { return v[3]; }
+
+// Return a vec4 with only the integer parts of the coordinates.
+// This can be used for finding the normal vectors of a 4D cube,
+// if the center of the cube is at (0,0,0,0).
+inline const Vec4 Vec4::intify() const
+{
+    return Vec4 { static_cast<double>(static_cast<int>(v[0])),
+        static_cast<double>(static_cast<int>(v[1])), static_cast<double>(static_cast<int>(v[2])),
+        static_cast<double>(static_cast<int>(v[3])) };
+}
