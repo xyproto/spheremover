@@ -25,30 +25,34 @@ protected:
     Sphere m_light;
     std::vector<Plane> m_planes;
     std::vector<Sphere> m_spheres;
+    std::vector<Cube> m_cubes;
     RGB m_backgroundColor;
 
 public:
-    Scene(Sphere light, Plane plane, Sphere sphere, RGB backgroundColor)
+    Scene(Sphere light, Plane plane, Sphere sphere, Cube cube, RGB backgroundColor)
         : m_light { light }
         , m_backgroundColor { backgroundColor }
     {
         m_planes.push_back(plane);
         m_spheres.push_back(sphere);
+        m_cubes.push_back(cube);
     }
 
-    Scene(Sphere light, Plane plane, std::vector<Sphere> spheres, RGB backgroundColor)
+    Scene(Sphere light, Plane plane, std::vector<Sphere> spheres, Cube cube, RGB backgroundColor)
         : m_light { light }
         , m_spheres { spheres }
         , m_backgroundColor { backgroundColor }
     {
         m_planes.push_back(plane);
+        m_cubes.push_back(cube);
     }
 
-    Scene(
-        Sphere light, std::vector<Plane> planes, std::vector<Sphere> spheres, RGB backgroundColor)
+    Scene(Sphere light, std::vector<Plane> planes, std::vector<Sphere> spheres,
+        std::vector<Cube> cubes, RGB backgroundColor)
         : m_light { light }
         , m_planes { planes }
         , m_spheres { spheres }
+        , m_cubes { cubes }
         , m_backgroundColor { backgroundColor }
     {
     }
@@ -65,7 +69,7 @@ public:
 const Scene Scene::sphere_move(const size_t index, const Vec3 offset) const
 {
     if (m_spheres.empty()) {
-        return Scene { m_light, m_planes, m_spheres, m_backgroundColor };
+        return Scene { m_light, m_planes, m_spheres, m_cubes, m_backgroundColor };
     }
 
     std::vector<Sphere> newSpheres;
@@ -79,7 +83,7 @@ const Scene Scene::sphere_move(const size_t index, const Vec3 offset) const
             newSpheres.push_back(m_spheres[i]);
         }
     }
-    return Scene { m_light, m_planes, newSpheres, m_backgroundColor };
+    return Scene { m_light, m_planes, newSpheres, m_cubes, m_backgroundColor };
 }
 
 // Move the light by creating an enitirely new scene
@@ -88,7 +92,7 @@ const Scene Scene::light_move(const Vec3 offset) const
     auto newPos = m_light.pos() + offset;
     auto newRadius = m_light.r();
     Sphere newLight = Sphere { newPos, newRadius };
-    return Scene { newLight, m_planes, m_spheres, m_backgroundColor };
+    return Scene { newLight, m_planes, m_spheres, m_cubes, m_backgroundColor };
 }
 
 // List the elements in this scene
@@ -102,6 +106,9 @@ inline const std::string Scene::str() const
     }
     for (const auto plane : m_planes) {
         ss << plane << "\n";
+    }
+    for (const auto cube : m_cubes) {
+        ss << cube << "\n";
     }
     return ss.str();
 }
@@ -170,8 +177,50 @@ inline const RGB Scene::color(const Point3 fromPoint, int x, int y) const
 
     for (const auto plane : m_planes) {
 
-        // Check if the ray intersects with the sphere, and deal with the optional returns
+        // Check if the ray intersects with the plane, and deal with the optional returns
         if (const auto maybeIntersectionPointAndNormal = ray.intersect(plane)) {
+
+            // Retrieve the intersection point and normal as a pair
+            const auto intersectionPointAndNormal = maybeIntersectionPointAndNormal.value();
+
+            // Pick out the intersection point and the normal. The normal from the plane is
+            // sometimes known as just "N".
+            const Point3 intersectionPoint = intersectionPointAndNormal.first;
+            const Vec3 normal = intersectionPointAndNormal.second;
+
+            // Get the vector pointing to the light from the intersection point. This is
+            // sometimes known as just "L".
+            const auto lightDirection = m_light.pos() - intersectionPoint;
+
+            // Get the dot product between the normalized light vector and the normalized
+            // normal vector. This says something about to which degree the surface normal
+            // points towards the light.
+            const double dt = lightDirection.normalize().dot(normal.normalize());
+
+            // Use a formula for producting a color from dt.
+            RGB currentColor
+                = ((Color::blueish + Color::white * dt) * .5) * .5 + m_backgroundColor * .5;
+
+            // TODO: Optimize by using distancedistance instead of distance, to avoid a sqrt?
+            double depth = fromPoint.distance(intersectionPoint);
+
+            if (depth < smallestDepth || firstFind) {
+                smallestDepth = depth;
+                firstFind = false;
+            }
+
+            depthColor.insert(
+                std::make_pair<double, RGB>(std::move(depth), std::move(currentColor)));
+
+            // Clamp the color values to the 0..255 range
+            // return currentColor.clamp255();
+        }
+    }
+
+    for (const auto cube : m_cubes) {
+
+        // Check if the ray intersects with the cube, and deal with the optional returns
+        if (const auto maybeIntersectionPointAndNormal = ray.intersect(cube)) {
 
             // Retrieve the intersection point and normal as a pair
             const auto intersectionPointAndNormal = maybeIntersectionPointAndNormal.value();

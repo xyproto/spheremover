@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <iomanip>
+#include <limits>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -211,10 +212,45 @@ const Points Cube::points() const
 }
 
 // Get the normal sticking out from the cube at the point p on the surface of the cube
-/*const Vec3 Cube::normal(const Vec3 p) const
+const Vec3 Cube::normal(const Vec3 p) const
 {
-    throw "not implemented!";
-    // for a circle:
-    // return (p - m_pos) / m_radius;
+
+    // BAH. None of the plans work. This function is a work in progress.
+
+    // 1. Find the closest three points on the cube.
+    // 2. Treat those three points as a face and find the normal from that.
+    // 3. ::intify that normal to get a cube normal.
+
+    Points xs = this->points();
+
+    // TODO: This can be made faster by passing in a distance_squared cache pointer to
+    //       each *_closest_* function call.
+    size_t smallest_ai = index_closest(xs, p);
+    size_t smallest_bi = index_closest_except(xs, p, std::vector<size_t> { smallest_ai });
+    size_t smallest_ci
+        = index_closest_except(xs, p, std::vector<size_t> { smallest_ai, smallest_bi });
+    size_t smallest_di = index_closest_except(
+        xs, p, std::vector<size_t> { smallest_ai, smallest_bi, smallest_ci });
+
+    // Okay, now create vectors that are from the center of the cube to these 3 closest points
+    const Vec3 av = xs[smallest_ai] - m_pos;
+    const Vec3 bv = xs[smallest_bi] - m_pos;
+    const Vec3 cv = xs[smallest_ci] - m_pos;
+    const Vec3 dv = xs[smallest_di] - m_pos;
+
+    // Average the vectors
+
+    const Vec3 average_closest = (av + bv + cv + dv) / 4;
+
+    // Just return the clostest vertex, from the center and to that one,
+    // then normalize and intify.
+    // return av.normalize().intify();
+
+    // Normalize the average
+
+    const Vec3 average_closest_normalized = average_closest.normalize();
+
+    // Intify the averaged normal to get a normal that points straight out
+
+    return average_closest_normalized.intify();
 }
-*/

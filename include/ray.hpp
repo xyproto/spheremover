@@ -44,6 +44,8 @@ public:
     }
     const std::optional<std::pair<const Point3, const Vec3>> intersect(const Sphere& sphere) const;
     const std::optional<std::pair<const Point3, const Vec3>> intersect(const Plane& plane) const;
+    const std::optional<std::pair<const Point3, const Vec3>> intersect(const Cube& cube) const;
+
     const std::string str() const;
 
     // TODO: Save ray direction in class at init?
@@ -94,26 +96,48 @@ inline const std::optional<std::pair<const Point3, const Vec3>> Ray::intersect(
     return std::pair { std::move(intersectionPoint), std::move(normalVector) };
 }
 
-// ray plane intersection
+// ray cube intersection
 inline const std::optional<std::pair<const Point3, const Vec3>> Ray::intersect(
-    const Plane& plane) const
+    const Cube& cube) const
 {
-    double denominator = direction().dot(plane.normal());
+
+    // TODO:
+    // https://www.scratchapixel.com/lessons/3d-basic-rendering/minimal-ray-tracer-rendering-simple-shapes/ray-box-intersection
+
+    const Vec3 norm = cube.normal(m_p0);
+
+    double denominator = direction().dot(norm);
 
     if (denominator <= 1e-6) { // smaller than a very small value (epsilon): no intersection
         return std::nullopt;
     }
-
-    double t = (plane.pos() - m_p0).dot(plane.normal()) / denominator;
+    double t = (cube.pos() - m_p0).dot(norm) / denominator;
     if (t < 0) { // plane behind ray's origin
         return std::nullopt;
     }
-
     const Point3 intersectionPoint = m_p0 + t * direction();
+    // std::cout << "CUBE INTERSECTION POINT: " << intersectionPoint << std::endl;
+    return std::pair { std::move(intersectionPoint), norm };
+}
 
+// ray plane intersection
+inline const std::optional<std::pair<const Point3, const Vec3>> Ray::intersect(
+    const Plane& plane) const
+{
+    const Vec3 norm = plane.normal();
+
+    double denominator = direction().dot(norm);
+
+    if (denominator <= 1e-6) { // smaller than a very small value (epsilon): no intersection
+        return std::nullopt;
+    }
+    double t = (plane.pos() - m_p0).dot(norm) / denominator;
+    if (t < 0) { // plane behind ray's origin
+        return std::nullopt;
+    }
+    const Point3 intersectionPoint = m_p0 + t * direction();
     // std::cout << "PLANE INTERSECTION POINT: " << intersectionPoint << std::endl;
-
-    return std::pair { std::move(intersectionPoint), plane.normal() };
+    return std::pair { std::move(intersectionPoint), norm };
 }
 
 // str returns a string representation of the ray.
