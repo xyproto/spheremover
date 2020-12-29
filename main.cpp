@@ -145,6 +145,9 @@ void TestCube()
     std::cout << "\t" << c2.p6() << std::endl;
     std::cout << "\t" << c2.p7() << std::endl;
     std::cout << "Cube 2 points: "s << c2.points() << std::endl;
+
+    Vec3 p { 0, 0, 0 };
+    std::cout << "Cube 2 normal, using point (0,0,0): " << c2.normal(p) << std::endl;
 }
 
 void TestDisk()
@@ -262,11 +265,12 @@ auto TestSDL2RayTrace(const bool verbose) -> int
     const Sphere sphere1 { Vec3 { W * .4, H * .5, 50 }, 50 };
     const Sphere sphere2 { Vec3 { W * .5, H * .5, 50 }, 50 };
     const Sphere sphere3 { Vec3 { W * .6, H * .5, 50 }, 50 };
+    const Cube cube1 { Vec3 { W * .7, H * .5, 50 }, 50 };
 
     std::vector<Sphere> spheres = { sphere1, sphere2, sphere3 };
 
     // Create a scene and a scene pointer
-    Scene scene1 { light, plane, spheres, Color::darkgray };
+    Scene scene1 { light, plane, spheres, cube1, Color::darkgray };
     std::unique_ptr<Scene> scene_ptr = std::make_unique<Scene>(scene1);
 
     // Create a camera point
@@ -512,6 +516,8 @@ void TestRayTrace(const std::string filename)
     const Sphere sphere2 { Vec3 { W * .5, H * .5, 50 }, 50 };
     const Sphere sphere3 { Vec3 { W * .6, H * .5, 50 }, 50 };
 
+    const Cube cube1 { Vec3 { W * .7, H * .5, 50 }, 50 };
+
     std::vector<Sphere> spheres = { sphere1, sphere2, sphere3 };
 
     std::ofstream out(filename);
@@ -519,7 +525,7 @@ void TestRayTrace(const std::string filename)
         << "255\n"s;
 
     // Create a scene
-    Scene scene { light, plane, spheres, Color::darkgray };
+    Scene scene { light, plane, spheres, cube1, Color::darkgray };
 
     // Create a camera point
     const Point3 fromPoint { 0, 0, -W * 2 };
@@ -549,24 +555,29 @@ auto TestScript(const std::string filename) -> int
     return interpret(tokenize(source));
 }
 
-auto main() -> int
+auto main(int argc, char** argv) -> int
 {
-    /*TestV2();
-    TestV3();
-    TestV4();
+    if (argc > 1) { // pass ie. "test" as the first argument
 
-    TestSphere();
-    TestCube();
-    TestDisk();
-    TestPlane();
+        TestV2();
+        TestV3();
+        TestV4();
 
-    TestRay();
-    TestRayTrace("/tmp/out.ppm"s);
+        TestSphere();
+        TestCube();
+        TestDisk();
+        TestPlane();
 
-    TestScript(SCRIPTDIR "hello.pip"s);
-    TestScript(SCRIPTDIR "hello2.pip"s);*/
+        TestRay();
+        TestRayTrace("/tmp/out.ppm"s);
 
-    TestSDL2RayTrace(true);
+        TestScript(SCRIPTDIR "hello.pip"s);
+        TestScript(SCRIPTDIR "hello2.pip"s);
+
+    } else { // default behavior
+
+        TestSDL2RayTrace(true);
+    }
 
     return EXIT_SUCCESS;
 }
