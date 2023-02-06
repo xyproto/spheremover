@@ -3,3 +3,4 @@ spheremover
 *.bak
 *.pro.user
 .*.stash
+build/
