@@ -1,6 +1,6 @@
 # Realtime Raytracing
 
-An experiment with C++, SDL2 and OpenMP-based realtime raytracing.
+An experiment with C++, SDL2 and OpenMP-based realtime raytracing on the CPU.
 
 * Move a sphere using either the arrow keys or `w`, `a`, `s`, `d`.
 * Switch to the next sphere with `space` or `tab`.
