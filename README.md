@@ -1,4 +1,4 @@
-# Sphere Mover
+# Realtime Raytracing
 
 An experiment with C++, SDL2 and OpenMP-based realtime raytracing.
 
