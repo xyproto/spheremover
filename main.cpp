@@ -507,7 +507,7 @@ auto TestSDL2RayTrace(const bool verbose) -> int
 void TestRayTrace(const std::string filename)
 {
     const int W = 320;
-    const int H = 200;
+    const int H = 240;
 
     const Sphere light { Vec3 { 0, 0, 50 }, 1 };
     const Plane plane { Vec3 { 0, 0, 100 }, (Vec3 { 0, 0, 0.5 }).normalize() };
