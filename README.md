@@ -29,6 +29,8 @@ An experiment with C++, SDL2 and OpenMP-based realtime raytracing.
 
 Tested on Arch Linux and macOS.
 
+The spheres can be moved around with a joystick / joypad.
+
 Written with the [Orbiton](https://github.com/xyproto/orbiton) editor.
 
 ## General info
