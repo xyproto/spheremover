@@ -12,23 +12,24 @@ An experiment with C++, SDL2 and OpenMP-based realtime raytracing.
 
 ![screenshot](img/screenshot.png)
 
+## Requirements
+
+* SDL2 (`sdl2` and optionally `sdl2_image`, `sdl2_mixer`, `sdl2_ttf`, `sdl2_net` and `sdl2_sound`)
+* OpenMP (`libomp`)
+* CMake (`cmake`)
+* GNU Make (`make`)
+
 ## Building
 
-Build and run using [`cxx`](https://github.com/xyproto/cxx):
+    make
 
-    cxx run
+## Running
 
-Just build:
+    make run
 
-    cxx
+Tested on Arch Linux and macOS.
 
-Or if you wish to generate a `CMakeLists.txt` file in the process and then build with `ninja`:
-
-    cxx cmake ninja
-
-Tested on Arch Linux.
-
-Written in [`o`](https://github.com/xyproto/o).
+Written with the [Orbiton](https://github.com/xyproto/orbiton) editor.
 
 ## General info
 
