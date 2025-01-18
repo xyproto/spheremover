@@ -8,16 +8,16 @@ An experiment with C++, SDL2 and OpenMP-based realtime raytracing.
 * Quit with `q` or `esc`.
 * You can also move the current sphere with a joystick, then press a key to select the next one.
 
-## Screenshot
-
-![screenshot](img/screenshot.png)
-
 ## Requirements
 
 * SDL2 (`sdl2` and optionally `sdl2_image`, `sdl2_mixer`, `sdl2_ttf`, `sdl2_net` and `sdl2_sound`)
 * OpenMP (`libomp`)
 * CMake (`cmake`)
 * GNU Make (`make`)
+
+## Screenshot
+
+![screenshot](img/screenshot.png)
 
 ## Building
 
